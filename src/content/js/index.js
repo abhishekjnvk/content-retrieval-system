@@ -55,6 +55,7 @@ $(document).ready(function () {
     $(this).addClass("selected_sidebar");
     current_location = location;
     LoadAllFiles();
+    TranscriptAudio(current_location);
   });
   $(".search_button").click(function () {
     search();
@@ -64,7 +65,10 @@ $(document).ready(function () {
 function LoadAllFiles() {
   $("#table_content").empty();
   if (fs.existsSync(current_location)) {
-    files = getFiles(current_location);
+    let audio_files = getAudioFiles(current_location);
+    files = getTextFiles(current_location);
+    files = files.concat(audio_files);
+
     files.forEach((file) => {
       addEntry(current_location + "/" + file);
     });
@@ -72,7 +76,6 @@ function LoadAllFiles() {
     console.log("No Folder Exist");
   }
 }
-
 function addEntry(location) {
   let stats = fs.statSync(location);
   if (stats.isDirectory()) {
@@ -112,7 +115,7 @@ function search() {
       if (file_location) addEntry(file_location);
     });
   } else {
-    let files = getFiles(current_location);
+    let files = getTextFiles(current_location);
     let searched_file = files.map(async (element) => {
       var command = `grep "${term}" "${current_location}/${element}" -i -R -o | wc -l`;
       const { stdout, stderr } = await exec(command);
@@ -140,12 +143,23 @@ function search() {
   }
 }
 
-function getFiles(location) {
+function getTextFiles(location) {
   let files = fs.readdirSync(location);
   files = files.filter((file) => {
     let ext = file.split(".");
     ext = ext[ext.length - 1];
     if (allowed_extension.includes(ext)) {
+      let stats = fs.statSync(location + "/" + file);
+      if (!stats.isDirectory()) return file;
+    }
+  });
+  return files;
+}
+function getAudioFiles(location) {
+  let files = fs.readdirSync(location);
+  files = files.filter((file) => {
+    let ext = file.split(".");
+    if (ext[ext.length - 1] == "wav") {
       let stats = fs.statSync(location + "/" + file);
       if (!stats.isDirectory()) return file;
     }
@@ -158,5 +172,30 @@ function openFile(file_location) {
     shell.openPath(file_location);
 }
 
+function TranscriptAudio(location) {
+  let files = getAudioFiles(location);
+  files.forEach(async (audio) => {
+    if (!fs.existsSync(__dirname + "/temp/" + md5(location + "/" + audio))) {
+      var command = `python3 "${__dirname + "/python/audio2text.py"}" "${
+        location + "/" + audio
+      }"`;
+      exec(command, function (error, stdout, stderr) {
+        if (stderr) {
+          // console.log(stderr);
+        } else {
+          console.log(stdout);
+          fs.writeFileSync(
+            __dirname + "/temp/" + md5(location + "/" + audio),
+            stdout
+          );
+        }
+      });
+    } else {
+      console.log("Transcript already available");
+    }
+  });
+}
+
+TranscriptAudio(current_location);
 LoadAllFiles();
 loadSideBar(current_directory);
