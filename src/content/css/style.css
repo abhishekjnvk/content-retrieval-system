@@ -16,3 +16,8 @@ ul,
 li {
   cursor: pointer;
 }
+
+.files_panel {
+  overflow-y: auto;
+  max-height: 80vh;
+}
