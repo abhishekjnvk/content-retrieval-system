@@ -1,0 +1,18 @@
+tr {
+  cursor: pointer;
+}
+.selected_sidebar {
+  background-color: rgb(169, 212, 212);
+}
+.more_file_icon {
+  float: right;
+  cursor: pointer;
+}
+ul,
+#myUL {
+  list-style-type: none;
+}
+
+li {
+  cursor: pointer;
+}
