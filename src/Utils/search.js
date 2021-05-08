@@ -2,7 +2,7 @@
 const Path = require('path');
 
 const searchDir=(dir,key)=>{
-    const files=fs.readdirSync(dir);
+    const files=getFiles(dir);
     return readAllFilesAndCount(dir,files,key);
     
 }
