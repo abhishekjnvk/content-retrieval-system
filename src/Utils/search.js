@@ -22,7 +22,7 @@ const readAllFilesAndCount=(dir,files,keys)=>{
             "count": count
         });
     }
-    freq=freq.sort((a,b)=>{
+    freq.sort((a,b)=>{
         p1=1
         p2=1
         s1=0
@@ -38,6 +38,14 @@ const readAllFilesAndCount=(dir,files,keys)=>{
        if(p1==p2)return s2-s1;
        return p2-p1;
     });
+    freq = freq.filter((a)=>{
+        s=0
+       var values1=Object.values(a.count);
+       for(i=0;i<values1.length;i++){
+           s=s+values1[i]
+       } 
+       return s>0;
+    })
     return freq;
 }
 const occurrences=(string, subString, allowOverlapping)=>{
