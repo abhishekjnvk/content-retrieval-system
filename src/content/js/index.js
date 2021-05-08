@@ -174,6 +174,9 @@ function openFile(file_location) {
 
 function TranscriptAudio(location) {
   let files = getAudioFiles(location);
+  if (!fs.existsSync(__dirname + "/temp/")) {
+    fs.mkdirSync(__dirname + "/temp/");
+  }
   files.forEach(async (audio) => {
     if (!fs.existsSync(__dirname + "/temp/" + md5(location + "/" + audio))) {
       var command = `python3 "${__dirname + "/python/audio2text.py"}" "${
@@ -181,13 +184,13 @@ function TranscriptAudio(location) {
       }"`;
       exec(command, function (error, stdout, stderr) {
         if (stderr) {
-          // console.log(stderr);
+          console.log(stderr);
         } else {
-          console.log(stdout);
-          fs.writeFileSync(
-            __dirname + "/temp/" + md5(location + "/" + audio),
-            stdout
-          );
+          if (stdout.trim() != 0)
+            fs.writeFileSync(
+              __dirname + "/temp/" + md5(location + "/" + audio),
+              stdout
+            );
         }
       });
     } else {
