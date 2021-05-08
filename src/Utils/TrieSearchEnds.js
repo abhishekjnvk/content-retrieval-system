@@ -12,6 +12,3 @@ const addData=(data,path)=>{
         console.log(key[i]+" "+t.results[key[i]]+" "+path);
     }
 }
-
-addData("the quick brown fox","file1");
-addData("the quick brown fox","file2");
