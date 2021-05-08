@@ -2,7 +2,7 @@
 const Path = require('path');
 
 const searchDir=(dir,key)=>{
-    const files=getFiles(dir);
+    const files=getTextFiles(dir);
     return readAllFilesAndCount(dir,files,key);
     
 }
