@@ -6,9 +6,8 @@ const md5 = require("md5");
 const jsStringEscape = require("js-string-escape");
 const util = require("util");
 const exec = util.promisify(require("child_process").exec);
-
+var allowed_extension = ["txt", "js", "python", "csv", "html"];
 const shell = require("electron").shell;
-const path = require("path");
 
 var files = [];
 var current_directory = os.homedir();
@@ -52,6 +51,13 @@ $(document).ready(function () {
     current_location = location;
     LoadAllFiles();
   });
+
+  $(".search_button").click(function (e) {
+    var term = $("#search_term").val();
+    term = jsStringEscape(term);
+    if (term) search(term);
+    else LoadAllFiles();
+  });
 });
 
 function LoadAllFiles() {
@@ -79,12 +85,18 @@ function addEntry(location) {
     stats.size / 1000
   } </small></td><td><small>${moment(stats.mtime).format(
     "Do MMMM, h:mm A"
-  )}</small></td><td><button class="btn btn-default" onclick="openFile('${location}')"><i class="fas fa-external-link-alt"></i></button></td></tr>`;
+  )}</small></td><td class="text-end"><button class="btn btn-default" onclick="openFile('${location}')"><i class="fas fa-external-link-alt"></i></button></td></tr>`;
   $("#table_content").append(updateString);
 }
 
 function search(term) {
   $("#table_content").empty();
+  // let ranked_files = searchDir(current_location, term);
+  // ranked_files.map((single_file) => {
+  //   console.log("Occurrence is " + single_file.count + " Times");
+  //   var file_location = single_file.path.trim();
+  //   if (file_location) addEntry(file_location);
+  // });
   let files = getFiles(current_location);
   let searched_file = files.map(async (element) => {
     var command = `grep "${term}" "${current_location}/${element}" -i -R -o | wc -l`;
@@ -103,6 +115,7 @@ function search(term) {
     let ranked_files = results.sort(function (a, b) {
       return b[1] - a[1];
     });
+    $("#table_content").empty();
     ranked_files.map((single_file) => {
       console.log("Occurrence is " + single_file[1] + " Times");
       var file_location = single_file[0].trim();
@@ -111,18 +124,15 @@ function search(term) {
   });
 }
 
-$("#search_term").on("input", function () {
-  var term = $("#search_term").val();
-  term = jsStringEscape(term);
-  if (term) search(term);
-  else LoadAllFiles();
-});
-
 function getFiles(location) {
   let files = fs.readdirSync(location);
   files = files.filter((file) => {
-    let stats = fs.statSync(location + "/" + file);
-    if (!stats.isDirectory()) return file;
+    let ext = file.split(".");
+    ext = ext[ext.length - 1];
+    if (allowed_extension.includes(ext)) {
+      let stats = fs.statSync(location + "/" + file);
+      if (!stats.isDirectory()) return file;
+    }
   });
   return files;
 }

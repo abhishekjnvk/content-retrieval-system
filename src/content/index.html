@@ -50,6 +50,9 @@
                     <div class="form-notch-trailing"></div>
                   </div>
                 </div>
+                <button type="button" class="btn btn-primary search_button">
+                  <i class="fas fa-search"></i>
+                </button>
               </div>
             </div>
           </section>
@@ -59,14 +62,14 @@
                 <th class="col-lg-4">Name</th>
                 <th class="col-lg-2">Size (KB)</th>
                 <th class="col-lg-2">Last Modified</th>
-                <th class="col-lg-2">#</th>
+                <th class="col-lg-2 text-end">#</th>
               </tr>
             </thead>
-            <tbody id="table_content"></tbody>
+            <tbody id="table_content" class="files_panel"></tbody>
           </table>
         </div>
       </div>
-
+      <script src="../Utils/search.js"></script>
       <script src="./js/index.js"></script>
     </div>
   </body>
