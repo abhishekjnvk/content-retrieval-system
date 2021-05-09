@@ -106,8 +106,8 @@ function search() {
     "<tr><td colspan='4' class='text-center'><div class='lds-roller'><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></td><tr>"
   );
 
-  var searched_audio = searchAudio(current_location, term);
-  console.log(searched_audio);
+  // var searched_audio = searchAudio(current_location, term);
+  // console.log(searched_audio);
   if (advance_search) {
     let ranked_files = searchDir(current_location, term);
     $("#table_content").empty();
@@ -201,7 +201,7 @@ function TranscriptAudio(location) {
   });
 }
 
-TranscriptAudio(current_location);
+// TranscriptAudio(current_location);
 LoadAllFiles();
 loadSideBar(current_directory);
 

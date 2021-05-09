@@ -18,15 +18,17 @@ const readAllFilesAndCount = (dir, files, keys, type = 1) => {
     const data = fs.readFileSync(path);
     const keyArray = keys.split(" ");
     var count = {};
+
+    if (type != 1) {
+      path = files[i];
+    }
+
     for (i in keyArray) {
       count[keyArray[i].toString()] = occurrences(
         data.toString(),
         keyArray[i],
         true
       );
-    }
-    if (type != 1) {
-      path = files[i];
     }
     freq.push({
       path: path,
