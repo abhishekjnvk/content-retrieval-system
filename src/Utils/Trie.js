@@ -48,7 +48,7 @@ class Trie{
       currentNode = currentNode.children[index];
     }                                            
     if (currentNode != null && currentNode.isEndWord){
-      return currentNode.count;
+      return currentNode.path;
     }
     return false;
   };
